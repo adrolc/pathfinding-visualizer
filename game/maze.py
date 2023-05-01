@@ -26,6 +26,7 @@ class Maze:
         self.object_list = self.create_object_list()
         self.init_objects()
         self.tick = tick
+        self.visualization = None
 
         # PathFinding algorithm (must be initialized after objects)
         if pathfinding_algorithm:
@@ -96,8 +97,15 @@ class Maze:
 
     def update_objects(self):
         self.player.update(self.walls)
-        self.visualization.algorithm.find(step_by_step=True)
-        self.visualization.algorithm.follow_found_path(step_by_step=True)
+        if self.visualization:
+            self.visualization.algorithm.find(
+                step_by_step=True,
+                visualization_speed=self.settings.visualization_finding_speed,
+            )
+            self.visualization.algorithm.follow_found_path(
+                step_by_step=True,
+                visualization_speed=self.settings.visualization_following_speed,
+            )
 
     def check_win_condition(self):
         if self.player.rect.colliderect(self.goal.rect):
@@ -107,8 +115,9 @@ class Maze:
 
     def draw_screen(self):
         self.screen.fill((255, 255, 255))
-        self.visualization.draw_visited_fields()
-        self.visualization.draw_found_path()
+        if self.visualization:
+            self.visualization.draw_visited_fields()
+            self.visualization.draw_found_path()
         draw_grid(self.screen, self.settings)
         self.screen.blit(self.player.image, self.player.rect)
         self.walls.draw(self.screen)

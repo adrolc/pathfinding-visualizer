@@ -5,6 +5,7 @@ Maze Game is a simple game in which you find the shortest path to the goal withi
 ## Demo
 
 * BFS
+
 ![alt text](./.docs/bfs_demo.gif)
 
 
@@ -22,11 +23,11 @@ Real-time visualization of the shortest pathfinding algorithm
 
 1. Clone this repository on your local machine
 ```bash
-git clone https://github.com/adrolc/pathfinding-visualizer.git
+git clone https://github.com/adrolc/pathfinding-visualizer
 ```
 1. Navigate to the repository folder
 ```bash
-cd PathFinding-Visualizer
+cd pathfinding-visualizer
 ```
 1. Install the required libraries
 ```bash

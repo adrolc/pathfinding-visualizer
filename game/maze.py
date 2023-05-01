@@ -6,11 +6,18 @@ from .wall import Wall
 from .goal import Goal
 from .settings import Settings
 from .boards.board_generator import create_maze, DEFAULT_MAZE_SIZE
-from .utils import draw_grid, draw_visited_fields
+from .utils import draw_grid
+from .visualization.visualization import Visualization
 
 
 class Maze:
-    def __init__(self, board = None, board_size: tuple[int, int] = None):
+    def __init__(
+        self,
+        board=None,
+        board_size: tuple[int, int] = None,
+        pathfinding_algorithm: Callable = None,
+        tick: int = 0,
+    ):
         pygame.init()
 
         self.initialize_board(board, board_size)
@@ -18,7 +25,11 @@ class Maze:
         self.setup_display()
         self.object_list = self.create_object_list()
         self.init_objects()
+        self.tick = tick
 
+        # PathFinding algorithm (must be initialized after objects)
+        if pathfinding_algorithm:
+            self.visualization = Visualization(self, pathfinding_algorithm(self))
 
     def initialize_board(self, board, board_size: tuple[int, int]):
         if board:
@@ -31,7 +42,9 @@ class Maze:
             self.board[board_size[1] - 2][board_size[0] - 1] = Settings.ID_GOAL
 
     def setup_display(self):
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode(
+            (self.settings.screen_width, self.settings.screen_height)
+        )
         pygame.display.set_caption("Maze game")
         self.clock = pygame.time.Clock()
 
@@ -74,7 +87,6 @@ class Maze:
             self.update_objects()
             self.check_win_condition()
             self.draw_screen()
-            self.clock.tick(10)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -84,6 +96,8 @@ class Maze:
 
     def update_objects(self):
         self.player.update(self.walls)
+        self.visualization.algorithm.find(step_by_step=True)
+        self.visualization.algorithm.follow_found_path(step_by_step=True)
 
     def check_win_condition(self):
         if self.player.rect.colliderect(self.goal.rect):
@@ -93,8 +107,11 @@ class Maze:
 
     def draw_screen(self):
         self.screen.fill((255, 255, 255))
+        self.visualization.draw_visited_fields()
+        self.visualization.draw_found_path()
         draw_grid(self.screen, self.settings)
         self.screen.blit(self.player.image, self.player.rect)
         self.walls.draw(self.screen)
         self.screen.blit(self.goal.image, self.goal.rect)
         pygame.display.flip()
+        self.clock.tick(self.tick)

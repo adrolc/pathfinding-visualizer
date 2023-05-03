@@ -10,6 +10,7 @@ class Node:
 
 class BFS(AbstractAlgorithm):
     def __init__(self, game):
+        super().__init__()
         self.game = game
         self.board = game.board
         self.start = Node(
@@ -17,10 +18,6 @@ class BFS(AbstractAlgorithm):
         )
         self.queue = deque([self.start])
         self.visited = {self.start.pos}
-        self.found = False
-
-        self.visited_fields = []
-        self.found_path = []
 
     def _process_neighbor(self, current, y, x):
         field = self.board[y][x]

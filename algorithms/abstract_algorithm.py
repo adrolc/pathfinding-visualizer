@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 
 class AbstractAlgorithm(ABC):
-    @abstractmethod
-    def __init__(self, game):
+    def __init__(self):
         self.found = False
         self.visited_fields = []
         self.found_path = []

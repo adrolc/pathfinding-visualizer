@@ -8,6 +8,9 @@ Maze Game is a simple game in which you find the shortest path to the goal withi
 
 ![alt text](./.docs/BFS.gif)
 
+### DFS
+
+![alt text](./.docs/DFS.gif)
 
 
 ## Features
